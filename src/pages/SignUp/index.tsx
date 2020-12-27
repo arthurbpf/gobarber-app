@@ -38,42 +38,47 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = yup.object().shape({
-        name: yup.string().required('Nome obrigatório'),
-        email: yup
-          .string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: yup.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
-      });
+        const schema = yup.object().shape({
+          name: yup.string().required('Nome obrigatório'),
+          email: yup
+            .string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: yup
+            .string()
+            .min(6, 'Senha deve ter no mínimo 6 caracteres'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      api.post('/users', data);
+        api.post('/users', data);
 
-      Alert.alert(
-        'Cadastro realizado com sucesso',
-        'Você já pode fazer login na aplicação',
-      );
-
-      navigation.goBack();
-    } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        formRef.current?.setErrors(getValidationErrors(error));
-      } else {
         Alert.alert(
-          'Erro no cadastro',
-          'Ocorreu um erro ao fazer o cadastro, tente novamente',
+          'Cadastro realizado com sucesso',
+          'Você já pode fazer login na aplicação',
         );
+
+        navigation.goBack();
+      } catch (error) {
+        if (error instanceof yup.ValidationError) {
+          formRef.current?.setErrors(getValidationErrors(error));
+        } else {
+          Alert.alert(
+            'Erro no cadastro',
+            'Ocorreu um erro ao fazer o cadastro, tente novamente',
+          );
+        }
       }
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
