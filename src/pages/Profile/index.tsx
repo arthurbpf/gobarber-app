@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   Alert,
   View,
@@ -12,7 +12,6 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/Feather';
-import { launchImageLibrary } from 'react-native-image-picker';
 
 import api from '../../services/api';
 
@@ -105,11 +104,7 @@ const SignUp: React.FC = () => {
     [navigation, updateUser],
   );
 
-  const handleUpdateAvatar = useCallback(() => {
-    launchImageLibrary({ mediaType: 'photo' }, () => {
-      console.log('oi');
-    });
-  }, []);
+  const handleUpdateAvatar = useCallback(() => {}, []);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
