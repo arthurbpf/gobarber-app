@@ -12,6 +12,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/Feather';
+import { launchImageLibrary } from 'react-native-image-picker/src';
 
 import api from '../../services/api';
 
@@ -104,7 +105,32 @@ const SignUp: React.FC = () => {
     [navigation, updateUser],
   );
 
-  const handleUpdateAvatar = useCallback(() => {}, []);
+  const handleUpdateAvatar = useCallback(() => {
+    launchImageLibrary({ mediaType: 'photo' }, response => {
+      if (response.didCancel) return;
+
+      if (response.errorCode) {
+        Alert.alert('Erro ao atualizar seu avatar');
+      }
+
+      const data = new FormData();
+
+      data.append('avatar', {
+        type: 'image/jpeg',
+        name: `${user.id}.jpg`,
+        uri: response.uri,
+      });
+
+      api
+        .patch('/users/avatar', data)
+        .then(apiResponse => {
+          updateUser(apiResponse.data);
+        })
+        .catch(() => {
+          Alert.alert('Erro ao atualizar seu avatar');
+        });
+    });
+  }, [updateUser, user.id]);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
